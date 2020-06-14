@@ -26,24 +26,101 @@ class CricketHome extends Component {
     btnDisabled : false,
     viewDetails : true,
 
-    // to store all batsman score - Sudama [13/06/2020]
-    batsmanScores : {
-      Batsman1: 0,
-      Batsman2: 0,
-      Batsman3: 0,
-      Batsman4: 0,
-      Batsman5: 0,
-      Batsman6: 0,
-      Batsman7: 0,
-      Batsman8: 0,
-      Batsman9: 0,
-      Batsman10: 0,
-      Batsman11: 0,
-    },
+    batsmanDetails : [
+      {
+        batsmanName : 'Batsman1',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman2',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman3',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman4',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman5',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman6',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman7',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman8',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman9',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman10',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+      {
+        batsmanName : 'Batsman11',
+        runs : 0,
+        balls : 0,
+        fours : 0,
+        sixs : 0
+      },
+    ],
 
     // to store all value to display details to user - Sudama [13/06/2020]
     matchDetails : []
 
+  }
+
+  componentDidMount = () => {
+    let batsmandetails = [...this.state.batsmanDetails]
+    for(let i=0; i < 11; i++) {
+      batsmandetails[i].batsmanName = localStorage.getItem(`player${i}`);
+    }
+    this.setState({
+      batsmanDetails : batsmandetails,
+      stricker : batsmandetails[0].batsmanName,
+      nonStricker : batsmandetails[1].batsmanName,
+    })
   }
 
   // Method to Stop the Interval to Stop the Running Match - Sudama [12/06/2020]
@@ -61,7 +138,7 @@ class CricketHome extends Component {
       this.stopMatch();
     } else {
       // Else Change the Batsman with the new Batsman - Sudama [12/06/2020]
-      newCurrentStricker = `Batsman${totalWickets + 2}`
+      newCurrentStricker = this.state.batsmanDetails[totalWickets + 1].batsmanName
     }
 
     // Updating value in state - Sudama [12/06/2020]
@@ -73,9 +150,19 @@ class CricketHome extends Component {
 
   // Method if there is extra run if random number is 7 - Sudama [12/06/2020]
   itsExtra = () => {
+    let batsmandetails = [...this.state.batsmanDetails];
+    let strickerIndex = batsmandetails.findIndex(batsmanData => {
+      return batsmanData.batsmanName === this.state.stricker
+    })
+
+    let batsmanScore = {...batsmandetails[strickerIndex]}
+    batsmanScore.balls += 1;
+
+    batsmandetails[strickerIndex] = batsmanScore;
     this.setState({
       extras: this.state.extras + 1,
-      totalScore: this.state.totalScore + 1
+      totalScore: this.state.totalScore + 1,
+      batsmanDetails : batsmandetails
     })
   }
 
@@ -86,25 +173,55 @@ class CricketHome extends Component {
     let currentNonStricker = this.state.stricker;
     
     // To update the Batsman Score who is the current Stricker - Sudama [13/06/2020]
-    let batsmanscores = {...this.state.batsmanScores};
-    batsmanscores[currentNonStricker] = batsmanscores[currentNonStricker] + ballScore;
+    let batsmandetails = [...this.state.batsmanDetails];
+    let strickerIndex = batsmandetails.findIndex(batsmanData => {
+      return batsmanData.batsmanName === currentNonStricker
+    })
+
+    let batsmanScore = {...batsmandetails[strickerIndex]}
+    batsmanScore.runs += ballScore;
+    batsmanScore.balls += 1;
+
+    batsmandetails[strickerIndex] = batsmanScore;
+
+    // let batsmanscores = {...this.state.batsmanScores};
+    // batsmanscores[currentNonStricker] = batsmanscores[currentNonStricker] + ballScore;
 
     this.setState({
       stricker: currentStricker,
       nonStricker: currentNonStricker,
       totalScore: this.state.totalScore + ballScore,
-      batsmanScores : batsmanscores 
+      batsmanDetails : batsmandetails
     })
   }
 
   // All Other Remaining Condition - Sudama [12/06/2020]
   otherScore = (ballScore) => {
     // To update the current stricker score - Sudama [13/06/2020]
-    let batsmanscores = {...this.state.batsmanScores};
-    batsmanscores[this.state.stricker] = batsmanscores[this.state.stricker] + ballScore;
+
+    let batsmandetails = [...this.state.batsmanDetails];
+    let strickerIndex = batsmandetails.findIndex(batsmanData => {
+      return batsmanData.batsmanName === this.state.stricker
+    })
+
+    let batsmanScore = {...batsmandetails[strickerIndex]}
+    batsmanScore.runs += ballScore;
+    batsmanScore.balls += 1;
+
+    if(ballScore === 6) {
+      batsmanScore.sixs += 1;
+    } else if(ballScore === 4) {
+      batsmanScore.fours += 1;
+    }
+
+    batsmandetails[strickerIndex] = batsmanScore;
+
+
+    // let batsmanscores = {...this.state.batsmanScores};
+    // batsmanscores[this.state.stricker] = batsmanscores[this.state.stricker] + ballScore;
     this.setState({
       totalScore: this.state.totalScore + ballScore,
-      batsmanScores: batsmanscores
+      batsmanDetails : batsmandetails
     })
   }
 
@@ -278,57 +395,27 @@ class CricketHome extends Component {
             <div className="row">
               <table className="table table-sm table-bordered full_data_table">
                 <thead>
-                  <th scope="col">Batsman Name</th>
-                  <th scope="col">Run Scored</th>
+                  <tr>
+                    <th scope="col">Batsman Name</th>
+                    <th scope="col" className="m-auto">R</th>
+                    <th scope="col" className="m-auto">B</th>
+                    <th scope="col" className="m-auto">4s</th>
+                    <th scope="col" className="m-auto">6s</th>
+                  </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Batsman 1</td>
-                    <td>{this.state.batsmanScores.Batsman1}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 2</td>
-                    <td>{this.state.batsmanScores.Batsman2}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 3</td>
-                    <td>{this.state.batsmanScores.Batsman3}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 4</td>
-                    <td>{this.state.batsmanScores.Batsman4}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 5</td>
-                    <td>{this.state.batsmanScores.Batsman5}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 6</td>
-                    <td>{this.state.batsmanScores.Batsman6}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 7</td>
-                    <td>{this.state.batsmanScores.Batsman7}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 8</td>
-                    <td>{this.state.batsmanScores.Batsman8}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 9</td>
-                    <td>{this.state.batsmanScores.Batsman9}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 10</td>
-                    <td>{this.state.batsmanScores.Batsman10}</td>
-                  </tr>
-                  <tr>
-                    <td>Batsman 11</td>
-                    <td>{this.state.batsmanScores.Batsman11}</td>
-                  </tr>
+                  {this.state.batsmanDetails?.map((batsmandata, index) => (
+                    <tr key={"player" + index}>
+                      <td>{batsmandata.batsmanName}</td>
+                      <td>{batsmandata.runs}</td>
+                      <td>{batsmandata.balls}</td>
+                      <td>{batsmandata.fours}</td>
+                      <td>{batsmandata.sixs}</td>
+                    </tr>
+                  ))}
                   <tr>
                     <th scope="row">Total Score</th>
-                    <td>{this.state.totalScore}</td>
+                    <td colSpan="4">{this.state.totalScore}</td>
                   </tr>
                 </tbody>
               </table>
@@ -373,8 +460,8 @@ class CricketHome extends Component {
                       </tr>
                     ))}
                     <tr>
-                      <th scope='row' colSpan='5'>Total Score</th>
-                      <td colspan='4'>{this.state.totalScore}</td>
+                      <th scope='row' colSpan='6'>Total Score</th>
+                      <td colSpan='3'>{this.state.totalScore}</td>
                     </tr>
                   </tbody>
                 </table>
