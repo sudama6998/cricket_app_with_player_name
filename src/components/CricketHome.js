@@ -25,6 +25,7 @@ class CricketHome extends Component {
     currentBallScore: 0,
     btnDisabled : false,
     viewDetails : true,
+    playAgainDisabled : true,
     yetToBat : [],
 
     // To Store the batsman details - Sudama [13/06/2020]
@@ -384,9 +385,14 @@ class CricketHome extends Component {
   // Method to Start the Match
   startMatch = () => {
     this.setState({
-      btnDisabled : true
+      btnDisabled : true,
+      playAgainDisabled : false
     })
     matchInterval = setInterval(() => this.generateScore(), 1000)
+  }
+
+  playAgain = () => {
+    window.location.reload();
   }
 
   // To toggle the display of details - Sudama [13/06/2020]
@@ -410,13 +416,27 @@ class CricketHome extends Component {
               <p className="total_score">{this.state.totalScore}-{this.state.wickets}<span>({this.state.overCount}.{this.state.ballCount})</span></p>
             </div>
             <p className="other_details">Extras : {this.state.extras}</p>
-            <p className="other_details">Striker : {this.state.stricker}</p>
-            <p className="other_details">Non-Striker : {this.state.nonStricker}</p>
+              <table className="table table-bordered full_data_table mt-3">
+                <thead>
+                  <tr>
+                    <th scope="col">Striker</th>
+                    <th scope="col">Non Striker</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{this.state.stricker}</td>
+                    <td>{this.state.nonStricker}</td>
+                  </tr>
+                </tbody>
+              </table>
             <p className="other_details mb-4" style={{width : '500px', fontSize: '20px'}}>Yet to Bat : {this.state.yetToBat?.map((data) => (data + ", "))}</p>
 
             <div className="row w-100 m-0">
               {/* Button to Start Match - Sudama [12/06/2020] */}
               <button className="btn btn-primary m-auto start_match_btn" onClick={() => this.startMatch()} disabled={this.state.btnDisabled}>Start Match</button>
+              {/* Play Again Button - Sudama [13/06/2020] */}
+              <button className="btn btn-primary m-auto start_match_btn" onClick={() => this.playAgain()} disabled={this.state.playAgainDisabled}>Play Again</button>
               {/* Button to toggle details - Sudama [13/06/2020] */}
               <button className="btn btn-primary m-auto start_match_btn" onClick={() => this.viewDetailsToggleHandler()}>{this.state.viewDetails ? "Hide Details" : "View Details" }</button>
             </div>
