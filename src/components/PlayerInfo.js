@@ -7,10 +7,12 @@ class PlayerInfo extends Component {
     playerNames : ["","","","","","","","","","",""]
   }
 
+  // To Clear local storage when component will mount - Sudama [13/06/2020]
   componentDidMount = () => {
     localStorage.clear();
   }
 
+  // Method to handle the onchange for input field - Sudama [13/06/2020]
   onInputChage = (event, index) => {
     let playernames = [...this.state.playerNames];
     playernames[index] = event.target.value;
@@ -20,28 +22,32 @@ class PlayerInfo extends Component {
     })
   }
 
+  // Method When User Click Submit - Sudama [13/06/2020]
   onSubmitClick = () => {
-    let inputEmpty = true;
+    let inputEmpty = true; // For Validating the input field should not be empty - Sudama [13/06/2020]
     for( let i=0; i < this.state.playerNames.length; i++) {
+      // If the Input Field is Empty then break the loop - Sudama [13/06/2020]
       if(this.state.playerNames[i] === '') {
         inputEmpty = true;
         break;
-      } else {
+      } else { // Else Update the value in localstorage - Sudama [13/06/2020]
         localStorage.setItem(`player${i}`,this.state.playerNames[i])
         inputEmpty = false;
       }
     }
 
+    // If any input field found empty then provide alert and clear the local storage - Sudama [13/06/2020]
     if(inputEmpty) {
       alert('Please Fill All Input Field');
       localStorage.clear();
-    } else {
+    } else { // Else Move to next page - Sudama [13/06/2020]
       this.props.history.push('/home');
     }
   }
 
   render() {
     return (
+      // Player Name Input Form - Sudama [13/06/2020]
       <div className="container">
         <div className="d-flex flex-wrap align-items-center justify-content-center" style={{minHeight: '100vh'}}>
           <div className="player_details_input p-3">
@@ -49,6 +55,7 @@ class PlayerInfo extends Component {
               <div className="row">
                 <h1 className="m-auto">Enter Players Name</h1>
               </div>
+              {/* Form Starts Here - Sudama [13/06/2020] */}
               <div className="w-100 my-4">
                 {this.state.playerNames?.map((data, index) => (
                   <ReusableInputField
@@ -62,8 +69,10 @@ class PlayerInfo extends Component {
                   />
                 ))}
               </div>
+              {/* Form Ends Here - Sudama [13/06/2020] */}
+              {/* Button to Submit Form - Sudama [13/06/2020] */}
               <div className="row">
-                <button className='btn btn-primary m-auto' onClick={() => this.onSubmitClick()}>Submit</button>
+                <button className='btn btn-primary m-auto' style={{width: '60%', marginTop: '20px', marginBottom: '30px !important'}} onClick={() => this.onSubmitClick()}>Next</button>
               </div>
             </div>
           </div>

@@ -26,6 +26,7 @@ class CricketHome extends Component {
     btnDisabled : false,
     viewDetails : true,
 
+    // To Store the batsman details - Sudama [13/06/2020]
     batsmanDetails : [
       {
         batsmanName : 'Batsman1',
@@ -106,16 +107,19 @@ class CricketHome extends Component {
       },
     ],
 
-    // to store all value to display details to user - Sudama [13/06/2020]
+    // To store all value to display details to user - Sudama [13/06/2020]
     matchDetails : []
 
   }
 
+  // To Update Batsman Name from local storage - Sudama [13/06/2020]
   componentDidMount = () => {
     let batsmandetails = [...this.state.batsmanDetails]
+
     for(let i=0; i < 11; i++) {
       batsmandetails[i].batsmanName = localStorage.getItem(`player${i}`);
     }
+
     this.setState({
       batsmanDetails : batsmandetails,
       stricker : batsmandetails[0].batsmanName,
@@ -150,15 +154,21 @@ class CricketHome extends Component {
 
   // Method if there is extra run if random number is 7 - Sudama [12/06/2020]
   itsExtra = () => {
+    // Copying the Batsman Details Array - Sudama [13/06/2020]
     let batsmandetails = [...this.state.batsmanDetails];
+    // Finding the Index of Current Stricker - Sudama [13/06/2020]
     let strickerIndex = batsmandetails.findIndex(batsmanData => {
       return batsmanData.batsmanName === this.state.stricker
     })
 
+    // Updating Details for current Stricker according to condition - Sudama [13/06/2020]
     let batsmanScore = {...batsmandetails[strickerIndex]}
     batsmanScore.balls += 1;
 
+    // Replacing the object at the current stricker index - Sudama [13/06/2020]
     batsmandetails[strickerIndex] = batsmanScore;
+
+    // Setting State - Sudama [13/06/2020]
     this.setState({
       extras: this.state.extras + 1,
       totalScore: this.state.totalScore + 1,
@@ -174,18 +184,19 @@ class CricketHome extends Component {
     
     // To update the Batsman Score who is the current Stricker - Sudama [13/06/2020]
     let batsmandetails = [...this.state.batsmanDetails];
+    // Finding Index of Current Stricker - Sudama [13/06/2020]
     let strickerIndex = batsmandetails.findIndex(batsmanData => {
       return batsmanData.batsmanName === currentNonStricker
     })
 
+    // Coping the object loacted at current stricker index - Sudama [13/06/2020]
     let batsmanScore = {...batsmandetails[strickerIndex]}
+    // Updating Values - Sudama [13/06/2020]
     batsmanScore.runs += ballScore;
     batsmanScore.balls += 1;
 
+    // Updating Objects - Sudama [13/06/2020]
     batsmandetails[strickerIndex] = batsmanScore;
-
-    // let batsmanscores = {...this.state.batsmanScores};
-    // batsmanscores[currentNonStricker] = batsmanscores[currentNonStricker] + ballScore;
 
     this.setState({
       stricker: currentStricker,
@@ -208,6 +219,7 @@ class CricketHome extends Component {
     batsmanScore.runs += ballScore;
     batsmanScore.balls += 1;
 
+    // If it is Four or Six then increment by 1 at current stricker - Sudama [13/06/2020]
     if(ballScore === 6) {
       batsmanScore.sixs += 1;
     } else if(ballScore === 4) {
@@ -404,6 +416,7 @@ class CricketHome extends Component {
                   </tr>
                 </thead>
                 <tbody>
+                  {/* Display the Data From Batsman Details Array */}
                   {this.state.batsmanDetails?.map((batsmandata, index) => (
                     <tr key={"player" + index}>
                       <td>{batsmandata.batsmanName}</td>
@@ -446,6 +459,7 @@ class CricketHome extends Component {
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Displaying Data from Match Details - Sudama [13/06/2020] */}
                     {this.state.matchDetails?.map((data, index) => (
                       <tr key={"data"+index}>
                         <td>{data.overNo}</td>
