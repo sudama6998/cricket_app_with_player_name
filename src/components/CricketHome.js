@@ -413,9 +413,10 @@ class CricketHome extends Component {
               <h1 className="m-auto">Score Card</h1>
             </div>
             <div className="row">
-              <p className="total_score">{this.state.totalScore}-{this.state.wickets}<span>({this.state.overCount}.{this.state.ballCount})</span></p>
+              <p className="total_score pr-4">{this.state.totalScore}-{this.state.wickets}<span>({this.state.overCount}.{this.state.ballCount})</span></p>
             </div>
             <p className="other_details">Extras : {this.state.extras}</p>
+            <div className="container-fluid px-3">
               <table className="table table-bordered full_data_table mt-3">
                 <thead>
                   <tr>
@@ -430,6 +431,7 @@ class CricketHome extends Component {
                   </tr>
                 </tbody>
               </table>
+            </div>
             <p className="other_details mb-4" style={{width : '500px', fontSize: '20px'}}>Yet to Bat : {this.state.yetToBat?.map((data) => (data + ", "))}</p>
 
             <div className="row w-100 m-0">
@@ -470,6 +472,10 @@ class CricketHome extends Component {
                       <td>{batsmandata.sixs}</td>
                     </tr>
                   ))}
+                  <tr>
+                    <th scope="row">Extras</th>
+                    <td colSpan="4">{this.state.extras}</td>
+                  </tr>
                   <tr>
                     <th scope="row">Total Score</th>
                     <td colSpan="4">{this.state.totalScore}</td>
