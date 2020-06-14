@@ -49,13 +49,13 @@ class CricketHome extends Component {
   // Method to Stop the Interval to Stop the Running Match - Sudama [12/06/2020]
   stopMatch = () => {
     clearInterval(matchInterval);
-    console.log(this.state.batsmanScores)
+    console.log(this.state.matchDetails)
   }
 
   // Method if there is a wicket - Sudama [12/06/2020]
   itsWicket = () => {
     let totalWickets = this.state.wickets + 1;
-    let newCurrentStricker = this.state.stricker;
+    let newCurrentStricker;
     // If Wicket is equal or more than 10 then stop the match - Sudama [12/06/2020]
     if(totalWickets >= 10) {
       this.stopMatch();
@@ -216,18 +216,17 @@ class CricketHome extends Component {
           totalWickets : this.state.wickets
         };
       }
+      //Adding the Current Ball Details in MatchDetails Array in State - Sudama [13/06/2020]
+      let fulldetails = this.state.matchDetails;
+      fulldetails.push(currentBallDetails);
+
+      this.setState({
+        currentBallScore: currentScore,
+        ballCount: updatedBallCount,
+        overCount: updatedOverCount,
+        matchDetails: fulldetails
+      })
     }
-
-    //Adding the Current Ball Details in MatchDetails Array in State - Sudama [13/06/2020]
-    let fulldetails = this.state.matchDetails;
-    fulldetails.push(currentBallDetails);
-
-    this.setState({
-      currentBallScore: currentScore,
-      ballCount: updatedBallCount,
-      overCount: updatedOverCount,
-      matchDetails: fulldetails
-    })
   }
 
   // Method to Start the Match
@@ -373,6 +372,10 @@ class CricketHome extends Component {
                         <td>{data.totalWickets}</td>
                       </tr>
                     ))}
+                    <tr>
+                      <th scope='row' colSpan='5'>Total Score</th>
+                      <td colspan='4'>{this.state.totalScore}</td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
