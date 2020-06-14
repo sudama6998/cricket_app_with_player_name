@@ -25,6 +25,7 @@ class CricketHome extends Component {
     currentBallScore: 0,
     btnDisabled : false,
     viewDetails : true,
+    yetToBat : [],
 
     // To Store the batsman details - Sudama [13/06/2020]
     batsmanDetails : [
@@ -115,15 +116,20 @@ class CricketHome extends Component {
   // To Update Batsman Name from local storage - Sudama [13/06/2020]
   componentDidMount = () => {
     let batsmandetails = [...this.state.batsmanDetails]
+    let yettobat = [...this.state.yetToBat]
 
     for(let i=0; i < 11; i++) {
       batsmandetails[i].batsmanName = localStorage.getItem(`player${i}`);
+      yettobat.push(localStorage.getItem(`player${i}`));
     }
+
+    yettobat.splice(0,2);
 
     this.setState({
       batsmanDetails : batsmandetails,
       stricker : batsmandetails[0].batsmanName,
       nonStricker : batsmandetails[1].batsmanName,
+      yetToBat : yettobat
     })
   }
 
@@ -137,18 +143,37 @@ class CricketHome extends Component {
   itsWicket = () => {
     let totalWickets = this.state.wickets + 1;
     let newCurrentStricker;
+    let yettobat = [...this.state.yetToBat]
     // If Wicket is equal or more than 10 then stop the match - Sudama [12/06/2020]
     if(totalWickets >= 10) {
       this.stopMatch();
     } else {
       // Else Change the Batsman with the new Batsman - Sudama [12/06/2020]
-      newCurrentStricker = this.state.batsmanDetails[totalWickets + 1].batsmanName
+      newCurrentStricker = this.state.batsmanDetails[totalWickets + 1].batsmanName;
+      yettobat.splice(0,1);
     }
+
+    // Copying the Batsman Details Array - Sudama [13/06/2020]
+    let batsmandetails = [...this.state.batsmanDetails];
+    // Finding the Index of Stricker Whose Wicket was taken - Sudama [13/06/2020]
+    let strickerIndex = batsmandetails.findIndex(batsmanData => {
+      return batsmanData.batsmanName === this.state.stricker
+    })
+
+    // Updating Details for that Stricker according to condition - Sudama [13/06/2020]
+    let batsmanScore = {...batsmandetails[strickerIndex]}
+    batsmanScore.balls += 1;
+    batsmanScore.batsmanName = batsmanScore.batsmanName + " (Out)";
+
+    // Replacing the object at the current stricker index - Sudama [13/06/2020]
+    batsmandetails[strickerIndex] = batsmanScore;
 
     // Updating value in state - Sudama [12/06/2020]
     this.setState({
       stricker: newCurrentStricker,
-      wickets : totalWickets
+      wickets : totalWickets,
+      batsmanDetails : batsmandetails,
+      yetToBat : yettobat
     })
   }
 
@@ -228,9 +253,6 @@ class CricketHome extends Component {
 
     batsmandetails[strickerIndex] = batsmanScore;
 
-
-    // let batsmanscores = {...this.state.batsmanScores};
-    // batsmanscores[this.state.stricker] = batsmanscores[this.state.stricker] + ballScore;
     this.setState({
       totalScore: this.state.totalScore + ballScore,
       batsmanDetails : batsmandetails
@@ -264,6 +286,7 @@ class CricketHome extends Component {
       // Call Function according to generated Score - Sudama [12/06/2020]
       if(currentScore === 8) {
         ballType = "Wicket";
+        let currentPlayerName = this.state.stricker;
         this.itsWicket();
         // Object Which will be store in matchDetails in State to display in table - Sudama [13/06/2020]
         currentBallDetails = {
@@ -272,7 +295,7 @@ class CricketHome extends Component {
           run : ballType,
           extra : 0,
           totalExtra: this.state.extras,
-          stricker : this.state.stricker,
+          stricker : currentPlayerName,
           non_stricker : this.state.nonStricker,
           totalRun : this.state.totalScore,
           totalWickets : this.state.wickets
@@ -388,7 +411,8 @@ class CricketHome extends Component {
             </div>
             <p className="other_details">Extras : {this.state.extras}</p>
             <p className="other_details">Striker : {this.state.stricker}</p>
-            <p className="other_details mb-4">Non-Striker : {this.state.nonStricker}</p>
+            <p className="other_details">Non-Striker : {this.state.nonStricker}</p>
+            <p className="other_details mb-4" style={{width : '500px', fontSize: '20px'}}>Yet to Bat : {this.state.yetToBat?.map((data) => (data + ", "))}</p>
 
             <div className="row w-100 m-0">
               {/* Button to Start Match - Sudama [12/06/2020] */}

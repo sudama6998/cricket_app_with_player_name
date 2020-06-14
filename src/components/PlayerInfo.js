@@ -7,11 +7,6 @@ class PlayerInfo extends Component {
     playerNames : ["","","","","","","","","","",""]
   }
 
-  // To Clear local storage when component will mount - Sudama [13/06/2020]
-  componentDidMount = () => {
-    localStorage.clear();
-  }
-
   // Method to handle the onchange for input field - Sudama [13/06/2020]
   onInputChage = (event, index) => {
     let playernames = [...this.state.playerNames];
@@ -39,7 +34,6 @@ class PlayerInfo extends Component {
     // If any input field found empty then provide alert and clear the local storage - Sudama [13/06/2020]
     if(inputEmpty) {
       alert('Please Fill All Input Field');
-      localStorage.clear();
     } else { // Else Move to next page - Sudama [13/06/2020]
       this.props.history.push('/home');
     }
