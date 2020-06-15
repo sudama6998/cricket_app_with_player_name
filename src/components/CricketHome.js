@@ -27,6 +27,7 @@ class CricketHome extends Component {
     viewDetails : true,
     playAgainDisabled : true,
     yetToBat : [],
+    matchCompleted: false,
 
     // To Store the batsman details - Sudama [13/06/2020]
     batsmanDetails : [
@@ -137,7 +138,7 @@ class CricketHome extends Component {
   // Method to Stop the Interval to Stop the Running Match - Sudama [12/06/2020]
   stopMatch = () => {
     clearInterval(matchInterval);
-    console.log(this.state.matchDetails)
+    this.setState({matchCompleted : true})
   }
 
   // Method if there is a wicket - Sudama [12/06/2020]
@@ -432,7 +433,7 @@ class CricketHome extends Component {
                 </tbody>
               </table>
             </div>
-            <p className="other_details mb-4" style={{width : '500px', fontSize: '20px'}}>Yet to Bat : {this.state.yetToBat?.map((data) => (data + ", "))}</p>
+            <p className="other_details mb-4" style={{width : '500px', fontSize: '20px'}}>{this.state.matchCompleted ? "Did Not Bat" : "Yet to Bat" } : {this.state.yetToBat?.map((data) => (data + ", "))}</p>
 
             <div className="row w-100 m-0">
               {/* Button to Start Match - Sudama [12/06/2020] */}
